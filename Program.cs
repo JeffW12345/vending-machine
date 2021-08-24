@@ -112,11 +112,12 @@ namespace Vending_Machine
                     throw new NotImplementedException("Refund not possible - debugging required!");
                 }
             }
-            // Remove the objects
+            // Remove the objects. Creates a new list consisting of the Coin objects I don't want to remove, and then 
+            // makes listOfCoinsInMachine point to the list. 
             List<Coin> tempList = new List<Coin>();
             for (int j = 0; j < listOfCoinsInMachine.Count; j++)
             {
-                if (indexesToRemove.Contains(j))
+                if (!indexesToRemove.Contains(j))
                 {
                     tempList.Add(listOfCoinsInMachine[j]);
                 }
@@ -278,10 +279,11 @@ namespace Vending_Machine
             PopulateEnumToForSaleDictionary();
             UpdateStock(ItemsForSaleEnum.Chocolate, 3); // Adds three chocolate bars to the stock
             UpdateStock(ItemsForSaleEnum.Cola,4);
-            UpdateStock(ItemsForSaleEnum.Crisps, 0);
+            UpdateStock(ItemsForSaleEnum.Crisps, 1);
             AddCoinsToMachine(CoinDenominationsEnum.FiveP, 30); // Adds 30 5p coins to the machine.
             AddCoinsToMachine(CoinDenominationsEnum.TwentyP, 2);
             MenuOptions(); // Presents the user with their options. Runs in a loop till program terminates.
         }
     }
 }
+
