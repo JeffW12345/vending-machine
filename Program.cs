@@ -31,13 +31,13 @@ namespace Vending_Machine
             }
             Console.WriteLine("\nYou have paid in " + paidSoFar.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + " in total.");
             string input = Console.ReadLine();
-            if (int.TryParse(input, out int numChosen) || validUserOptions.Contains(numChosen))
+            if (int.TryParse(input, out int numChosen) && validUserOptions.Contains(numChosen))
             {
                 if(numChosen == 0)
                 {
                     Console.WriteLine("Refund of " + paidSoFar.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + " given");
                     paidSoFar = 0;
-                    RemoveCoinsUserPutInMachine();
+                    RefundUser(paidSoFar);
                     listOfCoinsUserPutInMachine.Clear();
                     MenuOptions();
                 }
@@ -64,7 +64,7 @@ namespace Vending_Machine
                         double change = paidSoFar - enumToForSaleObjectDict[itemEnumRef].Cost;
                         Console.WriteLine("Your change is " + change.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + ". Have a nice day. :)");
                         paidSoFar = 0;
-                        RemoveCoinsUserPutInMachine();
+                        RefundUser(change);
                         listOfCoinsUserPutInMachine.Clear();
                         MenuOptions();
                     }
@@ -84,19 +84,41 @@ namespace Vending_Machine
             }
         }
 
-        private static void RemoveCoinsUserPutInMachine()
+        private static void RefundUser(double amount)
         {
-            foreach(var userInsertedCoin in listOfCoinsUserPutInMachine)
+            decimal amountToRefund = (decimal)amount; // To prevent rounding issues.
+            // Get indexes of Coin objects to remove from listOfCoinsUserPutInMachine list
+            List<int> indexesToRemove = new List<int>();
+            listOfCoinsUserPutInMachine.OrderBy(o => o.Value).ToList(); // Sort in ascending order by value
+            for (int i = listOfCoinsInMachine.Count - 1; i > -1; i--)
             {
-                foreach(var coin in listOfCoinsInMachine)
+                // If the coin is <= the value of the refund, it forms part of the refund.
+                if ((decimal)listOfCoinsInMachine[i].Value <= amountToRefund)
                 {
-                    if(coin.Value == userInsertedCoin.Value)
-                    {
-                        listOfCoinsInMachine.Remove(coin);
-                        continue;
-                    }
+                    amountToRefund -= (decimal)listOfCoinsInMachine[i].Value;
+                    indexesToRemove.Add(i);
+                }
+                // If we have obtained all the coins we need to fully refund the customer.
+                if (amountToRefund == 0)
+                {
+                    break;
+                }
+                // If we can't refund the customer with the available coins, there is a bug.
+                if (amountToRefund > 0 && i == 0)
+                {
+                    throw new NotImplementedException("Refund not possible - debugging required!");
                 }
             }
+            // Remove the objects
+            List<Coin> tempList = new List<Coin>();
+            for (int j = 0; j < listOfCoinsInMachine.Count; j++)
+            {
+                if (indexesToRemove.Contains(j))
+                {
+                    tempList.Add(listOfCoinsInMachine[j]);
+                }
+            }
+            listOfCoinsInMachine = tempList;
         }
 
         private static void RefundMessage()
@@ -115,18 +137,21 @@ namespace Vending_Machine
                 ForSale forSale = enumToForSaleObjectDict[item];
                 if(forSale.Quantity == 0)
                 {
-                    Console.WriteLine(itemNum + ": " + forSale.Name + " Cost: " + forSale.Cost + " OUT OF STOCK");
+                    Console.WriteLine(itemNum + ": " + forSale.Name + " cost: " + forSale.Cost.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) 
+                        + " OUT OF STOCK");
                     itemNum++;
                     continue;
                 }
                 if (forSale.Cost <= paidSoFar)
                 {
-                    Console.WriteLine(itemNum + ": " + forSale.Name + " Cost: " + forSale.Cost + " SELECT ITEM NUMBER TO BUY");
+                    Console.WriteLine(itemNum + ": " + forSale.Name + " cost: " + forSale.Cost.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) 
+                        + " SELECT ITEM NUMBER TO BUY");
                     validUserOptions.Add(itemNum);
                 }
                 else
                 {
-                    Console.WriteLine(itemNum + ": " + forSale.Name + " Cost: " + forSale.Cost + " NOT ENOUGH PAID TO BUY");
+                    Console.WriteLine(itemNum + ": " + forSale.Name + " cost: " + forSale.Cost.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) 
+                        + " NOT ENOUGH PAID TO BUY");
                 }
                 itemNum++;
             }
