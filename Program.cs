@@ -53,7 +53,7 @@ namespace Vending_Machine
                 else
                 {
                     ItemsForSaleEnum itemEnumRef = (ItemsForSaleEnum)numChosen - (Enum.GetNames(typeof(CoinDenominationsEnum)).Length + 1);
-                    UpdateStock(itemEnumRef, -1);
+                    ForSaleFactory.UpdateStock(itemEnumRef, -1);
                     Console.WriteLine("Thank you for purchasing " 
                         + ForSaleFactory.EnumToForSaleObjectDict[itemEnumRef].Name.ToLower() 
                         + " Enjoy it!");
@@ -226,24 +226,14 @@ namespace Vending_Machine
             return true;
         }
 
-        private static void UpdateStock(ItemsForSaleEnum itemForSale, int quantityToAddToStock)
-        {
-            if (ForSaleFactory.EnumToForSaleObjectDict.ContainsKey(itemForSale))
-            {
-                ForSaleFactory.EnumToForSaleObjectDict[itemForSale].Quantity += quantityToAddToStock;
-            }
-            else
-            {
-                throw new NotImplementedException("Object not in dictionary - debugging required!");
-            }
-        }
+
 
         static void Main(string[] args)
         {
             ForSaleFactory.PopulateEnumToForSaleDictionary();
-            UpdateStock(ItemsForSaleEnum.Chocolate, 3); // Adds three chocolate bars to the stock
-            UpdateStock(ItemsForSaleEnum.Cola,4);
-            UpdateStock(ItemsForSaleEnum.Crisps, 1);
+            ForSaleFactory.UpdateStock(ItemsForSaleEnum.Chocolate, 3); // Adds three chocolate bars to the stock
+            ForSaleFactory.UpdateStock(ItemsForSaleEnum.Cola,4);
+            ForSaleFactory.UpdateStock(ItemsForSaleEnum.Crisps, 1);
             CoinFactory.AddCoinsToMachine(CoinDenominationsEnum.FiveP, 30); // Adds 30 5p coins to the machine.
             CoinFactory.AddCoinsToMachine(CoinDenominationsEnum.TwentyP, 2);
             MenuOptions(); // Presents the user with their options. Runs in a loop till program terminates.
