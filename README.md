@@ -1,5 +1,4 @@
-# vending-machine
-Vending machine
+# Vending machine
 
 Accommodates refunds (and displayed an 'EXACT MONEY ONLY' message if there is insuffient change in the machine to provide a refund regardless of which item is bought and how much
 money is put in the machine).
