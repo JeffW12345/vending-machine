@@ -6,10 +6,7 @@ namespace Vending_Machine
 {
     class Program
     {
-        private static List<Coin> listOfCoinsInMachine = new List<Coin>();
-        private static List<Coin> listOfCoinsUserPutInMachine = new List<Coin>();
         private static List<int> validUserOptions;
-        private static Dictionary<ItemsForSaleEnum, ForSale> enumToForSaleObjectDict = new Dictionary<ItemsForSaleEnum, ForSale>();
         private static double paidSoFar = 0;
 
         private static void MenuOptions()
@@ -39,7 +36,7 @@ namespace Vending_Machine
                     Console.WriteLine("Refund of " + paidSoFar.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + " given");
                     paidSoFar = 0;
                     RefundUser(paidSoFar); // Removes money inserted by user from 'listOfCoinsUserPutInMachine' list.
-                    listOfCoinsUserPutInMachine.Clear();
+                    CoinFactory.ListOfCoinsUserPutInMachine.Clear();
                     MenuOptions();
                 }
                 // If user inserted a coin
@@ -48,8 +45,8 @@ namespace Vending_Machine
                     double paidInAmount = CoinFactory.GetCoin((CoinDenominationsEnum)numChosen).Value;
                     paidSoFar += paidInAmount;
                     Console.WriteLine("Thank you for your payment of " + paidInAmount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + ".");
-                    AddCoinsToMachine((CoinDenominationsEnum)numChosen, 1);
-                    listOfCoinsUserPutInMachine.Add(CoinFactory.GetCoin((CoinDenominationsEnum)numChosen));
+                    CoinFactory.AddCoinsToMachine((CoinDenominationsEnum)numChosen, 1);
+                    CoinFactory.ListOfCoinsUserPutInMachine.Add(CoinFactory.GetCoin((CoinDenominationsEnum)numChosen));
                     MenuOptions();
                 }
                 // If user buys item
@@ -58,17 +55,17 @@ namespace Vending_Machine
                     ItemsForSaleEnum itemEnumRef = (ItemsForSaleEnum)numChosen - (Enum.GetNames(typeof(CoinDenominationsEnum)).Length + 1);
                     UpdateStock(itemEnumRef, -1);
                     Console.WriteLine("Thank you for purchasing " 
-                        + enumToForSaleObjectDict[itemEnumRef].Name.ToLower() 
+                        + ForSaleFactory.EnumToForSaleObjectDict[itemEnumRef].Name.ToLower() 
                         + " Enjoy it!");
                     // Processes refund if applicable. No refund given if user was told 'EXACT MONEY ONLY' before inserting money, even if sufficient change now available 
                     // for refund.
                     if (changeAvailable)
                     {
-                        double change = paidSoFar - enumToForSaleObjectDict[itemEnumRef].Cost;
+                        double change = paidSoFar - ForSaleFactory.EnumToForSaleObjectDict[itemEnumRef].Cost;
                         Console.WriteLine("Your change is " + change.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + ". Have a nice day. :)");
                         paidSoFar = 0;
                         RefundUser(change); // Removes money inserted by user from 'listOfCoinsUserPutInMachine' list.
-                        listOfCoinsUserPutInMachine.Clear();
+                        CoinFactory.ListOfCoinsUserPutInMachine.Clear();
                         MenuOptions();
                     }
                     else
@@ -92,13 +89,13 @@ namespace Vending_Machine
             decimal amountToRefund = (decimal)amount; // To prevent rounding issues.
             // Get indexes of Coin objects to remove from listOfCoinsUserPutInMachine list
             List<int> indexesToRemove = new List<int>();
-            listOfCoinsUserPutInMachine.OrderBy(o => o.Value).ToList(); // Sort in ascending order by value
-            for (int i = listOfCoinsInMachine.Count - 1; i > -1; i--)
+            CoinFactory.ListOfCoinsUserPutInMachine.OrderBy(o => o.Value).ToList(); // Sort in ascending order by value
+            for (int i = CoinFactory.ListOfCoinsInMachine.Count - 1; i > -1; i--)
             {
                 // If the coin is <= the value of the refund, it forms part of the refund.
-                if ((decimal)listOfCoinsInMachine[i].Value <= amountToRefund)
+                if ((decimal)CoinFactory.ListOfCoinsInMachine[i].Value <= amountToRefund)
                 {
-                    amountToRefund -= (decimal)listOfCoinsInMachine[i].Value;
+                    amountToRefund -= (decimal)CoinFactory.ListOfCoinsInMachine[i].Value;
                     indexesToRemove.Add(i);
                 }
                 // If we have obtained all the coins we need to fully refund the customer.
@@ -115,14 +112,14 @@ namespace Vending_Machine
             // Remove the objects. Creates a new list consisting of the Coin objects I don't want to remove, and then 
             // makes listOfCoinsInMachine point to the list. 
             List<Coin> tempList = new List<Coin>();
-            for (int j = 0; j < listOfCoinsInMachine.Count; j++)
+            for (int j = 0; j < CoinFactory.ListOfCoinsInMachine.Count; j++)
             {
                 if (!indexesToRemove.Contains(j))
                 {
-                    tempList.Add(listOfCoinsInMachine[j]);
+                    tempList.Add(CoinFactory.ListOfCoinsInMachine[j]);
                 }
             }
-            listOfCoinsInMachine = tempList;
+            CoinFactory.ListOfCoinsInMachine = tempList;
         }
 
         private static void RefundMessage()
@@ -138,7 +135,7 @@ namespace Vending_Machine
             int itemNum = Enum.GetNames(typeof(CoinDenominationsEnum)).Length + 1; // Next number in display is the number after the coin denomination final number
             foreach (ItemsForSaleEnum item in enumValues)
             {
-                ForSale forSale = enumToForSaleObjectDict[item];
+                ForSale forSale = ForSaleFactory.EnumToForSaleObjectDict[item];
                 if(forSale.Quantity == 0)
                 {
                     Console.WriteLine(itemNum + ": " + forSale.Name + " cost: " + forSale.Cost.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) 
@@ -184,12 +181,12 @@ namespace Vending_Machine
                 foreach (ItemsForSaleEnum item in itemsEnum)
                 {
                     // Move to next item if this item out of stock
-                    if(enumToForSaleObjectDict[item].Quantity == 0)
+                    if(ForSaleFactory.EnumToForSaleObjectDict[item].Quantity == 0)
                     {
                         continue;
                     }
                     double coinVal = CoinFactory.GetCoin(coin).Value;
-                    double itemInMachineCost = enumToForSaleObjectDict[item].Cost;
+                    double itemInMachineCost = ForSaleFactory.EnumToForSaleObjectDict[item].Cost;
                     if ((coinVal + paidSoFar) > itemInMachineCost && !IsChangeAvailableForThisAmount((coinVal + paidSoFar) - itemInMachineCost))
                     {
                         return false;
@@ -201,23 +198,23 @@ namespace Vending_Machine
 
         private static bool IsChangeAvailableForThisAmount(double amountRemaining)
         {
-            if(listOfCoinsInMachine.Count == 0)
+            if(CoinFactory.ListOfCoinsInMachine.Count == 0)
             {
                 return false;
             }
             decimal remaining = (decimal)amountRemaining; // To prevent rounding issues, such as 15 being represented as 14.999999999
-            listOfCoinsInMachine.OrderBy(o => o.Value).ToList(); // Sorts low to high by value
-            for (int j = listOfCoinsInMachine.Count - 1; j > -1; j--)
+            CoinFactory.ListOfCoinsInMachine.OrderBy(o => o.Value).ToList(); // Sorts low to high by value
+            for (int j = CoinFactory.ListOfCoinsInMachine.Count - 1; j > -1; j--)
             {
                 if (remaining > 0 && j == 0)
                 {
                     return false;
                 }
-                if (remaining >= (decimal) listOfCoinsInMachine[j].Value)
+                if (remaining >= (decimal)CoinFactory.ListOfCoinsInMachine[j].Value)
                 {
-                    remaining -= (decimal) listOfCoinsInMachine[j].Value;
+                    remaining -= (decimal)CoinFactory.ListOfCoinsInMachine[j].Value;
                 }
-                if (remaining < (decimal) listOfCoinsInMachine[j].Value)
+                if (remaining < (decimal)CoinFactory.ListOfCoinsInMachine[j].Value)
                 {
                     continue;
                 }
@@ -231,59 +228,25 @@ namespace Vending_Machine
 
         private static void UpdateStock(ItemsForSaleEnum itemForSale, int quantityToAddToStock)
         {
-            if (enumToForSaleObjectDict.ContainsKey(itemForSale))
+            if (ForSaleFactory.EnumToForSaleObjectDict.ContainsKey(itemForSale))
             {
-                enumToForSaleObjectDict[itemForSale].Quantity += quantityToAddToStock;
+                ForSaleFactory.EnumToForSaleObjectDict[itemForSale].Quantity += quantityToAddToStock;
             }
             else
             {
                 throw new NotImplementedException("Object not in dictionary - debugging required!");
             }
         }
-        private static void PopulateEnumToForSaleDictionary()
-        {
-            Array itemValues = Enum.GetValues(typeof(ItemsForSaleEnum));
-            foreach (ItemsForSaleEnum item in itemValues)
-            {
-                if(item == ItemsForSaleEnum.Cola)
-                {
-                    enumToForSaleObjectDict.Add(item, new ForSale(item.ToString(), 1.00));
-                    continue;
-                }
-                if (item == ItemsForSaleEnum.Chocolate)
-                {
-                    enumToForSaleObjectDict.Add(item, new ForSale(item.ToString(), 0.65));
-                    continue;
-                }
-                if (item == ItemsForSaleEnum.Crisps)
-                {
-                    enumToForSaleObjectDict.Add(item, new ForSale(item.ToString(), 0.50));
-                    continue;
-                }
-                else
-                {
-                    throw new NotImplementedException("Item missing from PopulateForSaleDictionary method");
-                }
-            }
-        }
 
-        private static void AddCoinsToMachine(CoinDenominationsEnum coinValue, int numToAdd)
-        {
-            for(int i = 0; i < numToAdd; i++)
-            {
-                listOfCoinsInMachine.Add(CoinFactory.GetCoin(coinValue));
-            }
-        }
         static void Main(string[] args)
         {
-            PopulateEnumToForSaleDictionary();
+            ForSaleFactory.PopulateEnumToForSaleDictionary();
             UpdateStock(ItemsForSaleEnum.Chocolate, 3); // Adds three chocolate bars to the stock
             UpdateStock(ItemsForSaleEnum.Cola,4);
             UpdateStock(ItemsForSaleEnum.Crisps, 1);
-            AddCoinsToMachine(CoinDenominationsEnum.FiveP, 30); // Adds 30 5p coins to the machine.
-            AddCoinsToMachine(CoinDenominationsEnum.TwentyP, 2);
+            CoinFactory.AddCoinsToMachine(CoinDenominationsEnum.FiveP, 30); // Adds 30 5p coins to the machine.
+            CoinFactory.AddCoinsToMachine(CoinDenominationsEnum.TwentyP, 2);
             MenuOptions(); // Presents the user with their options. Runs in a loop till program terminates.
         }
     }
 }
-
