@@ -37,6 +37,8 @@ namespace Vending_Machine
                 {
                     Console.WriteLine("Refund of " + paidSoFar.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + " given");
                     paidSoFar = 0;
+                    RemoveCoinsUserPutInMachine();
+                    listOfCoinsUserPutInMachine.Clear();
                     MenuOptions();
                 }
                 // If user inserted a coin
