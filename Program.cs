@@ -114,6 +114,7 @@ namespace Vending_Machine
                 if(forSale.Quantity == 0)
                 {
                     Console.WriteLine(itemNum + ": " + forSale.Name + " Cost: " + forSale.Cost + " OUT OF STOCK");
+                    itemNum++;
                     continue;
                 }
                 if (forSale.Cost <= paidSoFar)
