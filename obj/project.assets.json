@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\water\\source\\repos\\Vending Machine\\Vending Machine.csproj",
+      "projectUniqueName": "C:\\Users\\water\\OneDrive\\Desktop\\New folder (2)\\Vending Machine.csproj",
       "projectName": "Vending Machine",
-      "projectPath": "C:\\Users\\water\\source\\repos\\Vending Machine\\Vending Machine.csproj",
+      "projectPath": "C:\\Users\\water\\OneDrive\\Desktop\\New folder (2)\\Vending Machine.csproj",
       "packagesPath": "C:\\Users\\water\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\water\\source\\repos\\Vending Machine\\obj\\",
+      "outputPath": "C:\\Users\\water\\OneDrive\\Desktop\\New folder (2)\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\"
