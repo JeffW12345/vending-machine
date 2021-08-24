@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -150,6 +150,7 @@ namespace Vending_Machine
             }
         }
 
+        // Whatever amount the user next puts in, and whatever item the user subsequently wants to buy, is change available?
         private static bool IsChangeAvailable()
         {
             Array coinEnum = Enum.GetValues(typeof(CoinDenominationsEnum));
@@ -159,9 +160,14 @@ namespace Vending_Machine
             {
                 foreach (ItemsForSaleEnum item in itemsEnum)
                 {
+                    // Move to next item if this item out of stock
+                    if(enumToObjDict[item].Quantity == 0)
+                    {
+                        continue;
+                    }
                     double coinVal = GetCoin(coin).Value;
                     double itemInMachineCost = enumToObjDict[item].Cost;
-                    if ((coinVal + paidSoFar) > itemInMachineCost && !IsChangeAvailableForThisAmount(itemInMachineCost - (coinVal + paidSoFar)))
+                    if ((coinVal + paidSoFar) > itemInMachineCost && !IsChangeAvailableForThisAmount((coinVal + paidSoFar) - itemInMachineCost))
                     {
                         return false;
                     }
@@ -172,9 +178,14 @@ namespace Vending_Machine
 
         private static bool IsChangeAvailableForThisAmount(double amountRemaining)
         {
+            amountRemaining = (double)Convert.ToDecimal(amountRemaining);
             listOfCoinsInMachine.OrderBy(o => o.Value).ToList(); // Sorts low to high by value
             for (int j = listOfCoinsInMachine.Count - 1; j > -1; j--)
             {
+                if (amountRemaining > 0 && j == 0)
+                {
+                    return false;
+                }
                 if (amountRemaining >= listOfCoinsInMachine[j].Value)
                 {
                     amountRemaining -= listOfCoinsInMachine[j].Value;
@@ -186,10 +197,6 @@ namespace Vending_Machine
                 if (amountRemaining == 0)
                 {
                     break;
-                }
-                if (amountRemaining > 0 && j == 0)
-                {
-                    return false;
                 }
             }
             return true;
@@ -252,3 +259,4 @@ namespace Vending_Machine
         }
     }
 }
+
