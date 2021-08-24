@@ -14,7 +14,8 @@ namespace Vending_Machine
         {
             validUserOptions = new List<int>(); // Clears the list each time the method is run
             CoinOptionsMessage(); // Tells the users which options to select to add various coins
-            if (IsChangeAvailable())
+            bool changeAvailable = IsChangeAvailable();
+            if (changeAvailable)
             {
                 Console.WriteLine("\nINSERT COINS");
             }
@@ -54,7 +55,7 @@ namespace Vending_Machine
                     Console.WriteLine("Thank you for purchasing " 
                         + enumToObjDict[itemEnumRef].Name.ToLower() 
                         + " Enjoy it!");
-                    if (IsChangeAvailable())
+                    if (changeAvailable)
                     {
                         double change = paidSoFar - enumToObjDict[itemEnumRef].Cost;
                         Console.WriteLine("Your change is " + change.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + ". Have a nice day. :)");
@@ -178,23 +179,27 @@ namespace Vending_Machine
 
         private static bool IsChangeAvailableForThisAmount(double amountRemaining)
         {
-            amountRemaining = (double)Convert.ToDecimal(amountRemaining);
+            if(listOfCoinsInMachine.Count == 0)
+            {
+                return false;
+            }
+            decimal remaining = (decimal)amountRemaining; // To prevent rounding issues, such as 15 being represented as 14.999999999
             listOfCoinsInMachine.OrderBy(o => o.Value).ToList(); // Sorts low to high by value
             for (int j = listOfCoinsInMachine.Count - 1; j > -1; j--)
             {
-                if (amountRemaining > 0 && j == 0)
+                if (remaining > 0 && j == 0)
                 {
                     return false;
                 }
-                if (amountRemaining >= listOfCoinsInMachine[j].Value)
+                if (remaining >= (decimal) listOfCoinsInMachine[j].Value)
                 {
-                    amountRemaining -= listOfCoinsInMachine[j].Value;
+                    remaining -= (decimal) listOfCoinsInMachine[j].Value;
                 }
-                if (amountRemaining < listOfCoinsInMachine[j].Value)
+                if (remaining < (decimal) listOfCoinsInMachine[j].Value)
                 {
                     continue;
                 }
-                if (amountRemaining == 0)
+                if (remaining == 0)
                 {
                     break;
                 }
@@ -253,10 +258,11 @@ namespace Vending_Machine
             UpdateStock(ItemsForSaleEnum.Chocolate, 3);
             UpdateStock(ItemsForSaleEnum.Cola,4);
             UpdateStock(ItemsForSaleEnum.Crisps, 0);
-            AddCoinsToMachine(CoinDenominationsEnum.FiveP, 30);
-            AddCoinsToMachine(CoinDenominationsEnum.TwentyP, 23);
+            //AddCoinsToMachine(CoinDenominationsEnum.FiveP, 30);
+            AddCoinsToMachine(CoinDenominationsEnum.TwentyP, 2);
             MenuOptions();
         }
     }
 }
+
 
