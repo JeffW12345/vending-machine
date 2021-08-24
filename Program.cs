@@ -11,6 +11,7 @@ namespace Vending_Machine
         private static List<int> validUserOptions;
         private static Dictionary<ItemsForSaleEnum, ForSale> enumToForSaleObjectDict = new Dictionary<ItemsForSaleEnum, ForSale>();
         private static double paidSoFar = 0;
+
         private static void MenuOptions()
         {
             validUserOptions = new List<int>(); // Clears the list each time the method is run
@@ -44,11 +45,11 @@ namespace Vending_Machine
                 // If user inserted a coin
                 if(numChosen < (Enum.GetNames(typeof(CoinDenominationsEnum)).Length + 1) && numChosen > 0)
                 {
-                    double paidInAmount = GetCoin((CoinDenominationsEnum)numChosen).Value;
+                    double paidInAmount = CoinFactory.GetCoin((CoinDenominationsEnum)numChosen).Value;
                     paidSoFar += paidInAmount;
                     Console.WriteLine("Thank you for your payment of " + paidInAmount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + ".");
                     AddCoinsToMachine((CoinDenominationsEnum)numChosen, 1);
-                    listOfCoinsUserPutInMachine.Add(GetCoin((CoinDenominationsEnum)numChosen));
+                    listOfCoinsUserPutInMachine.Add(CoinFactory.GetCoin((CoinDenominationsEnum)numChosen));
                     MenuOptions();
                 }
                 // If user buys item
@@ -165,38 +166,9 @@ namespace Vending_Machine
             Array enumValues = Enum.GetValues(typeof(CoinDenominationsEnum));
             foreach (CoinDenominationsEnum option in enumValues)
             {
-                var coin = GetCoin(option);
+                var coin = CoinFactory.GetCoin(option);
                 Console.WriteLine((int) option + ": " + coin.Description);
                 validUserOptions.Add((int)option);
-            }
-        }
-
-        private static Coin GetCoin(CoinDenominationsEnum coinValue)
-        {
-            switch (coinValue)
-            {
-                case (CoinDenominationsEnum.FiveP):
-                    {
-                        return new Coin("Five Pence Piece", 0.05);
-                    }
-                case (CoinDenominationsEnum.TwentyP):
-                    {
-                        return new Coin("Twenty Pence Piece", 0.20);
-                    }
-                case (CoinDenominationsEnum.FiftyP):
-                    {
-                        return new Coin("Fifty Pence Piece", 0.50);
-                    }
-                case (CoinDenominationsEnum.PoundCoin):
-                    {
-                        return new Coin("Pound Coin", 1.00);
-                    }
-                case (CoinDenominationsEnum.TwoPoundCoin):
-                    {
-                        return new Coin("Two Pound Coin", 2.00);
-                    }
-                default:
-                    throw new NotImplementedException("Enum item not present in GetCoin method - debugging required!");
             }
         }
 
@@ -215,7 +187,7 @@ namespace Vending_Machine
                     {
                         continue;
                     }
-                    double coinVal = GetCoin(coin).Value;
+                    double coinVal = CoinFactory.GetCoin(coin).Value;
                     double itemInMachineCost = enumToForSaleObjectDict[item].Cost;
                     if ((coinVal + paidSoFar) > itemInMachineCost && !IsChangeAvailableForThisAmount((coinVal + paidSoFar) - itemInMachineCost))
                     {
@@ -298,7 +270,7 @@ namespace Vending_Machine
         {
             for(int i = 0; i < numToAdd; i++)
             {
-                listOfCoinsInMachine.Add(GetCoin(coinValue));
+                listOfCoinsInMachine.Add(CoinFactory.GetCoin(coinValue));
             }
         }
         static void Main(string[] args)
@@ -313,4 +285,3 @@ namespace Vending_Machine
         }
     }
 }
-
