@@ -31,6 +31,7 @@ namespace Vending_Machine
             string input = Console.ReadLine();
             if (int.TryParse(input, out int numChosen) && validUserOptions.Contains(numChosen))
             {
+                // User wants a full refund. No purchase made.
                 if(numChosen == 0)
                 {
                     Console.WriteLine("Refund of " + paidSoFar.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + " given");
