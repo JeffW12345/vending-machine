@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 namespace Vending_Machine
 {
     class ForSaleFactory
@@ -28,6 +32,17 @@ namespace Vending_Machine
                 {
                     throw new NotImplementedException("Item missing from PopulateForSaleDictionary method");
                 }
+            }
+        }
+        public static void UpdateStock(ItemsForSaleEnum itemForSale, int quantityToAddToStock)
+        {
+            if (ForSaleFactory.EnumToForSaleObjectDict.ContainsKey(itemForSale))
+            {
+                ForSaleFactory.EnumToForSaleObjectDict[itemForSale].Quantity += quantityToAddToStock;
+            }
+            else
+            {
+                throw new NotImplementedException("Object not in dictionary - debugging required!");
             }
         }
     }
