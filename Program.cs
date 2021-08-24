@@ -37,7 +37,7 @@ namespace Vending_Machine
                 {
                     Console.WriteLine("Refund of " + paidSoFar.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + " given");
                     paidSoFar = 0;
-                    RefundUser(paidSoFar);
+                    RefundUser(paidSoFar); // Removes money inserted by user from 'listOfCoinsUserPutInMachine' list.
                     listOfCoinsUserPutInMachine.Clear();
                     MenuOptions();
                 }
@@ -59,19 +59,21 @@ namespace Vending_Machine
                     Console.WriteLine("Thank you for purchasing " 
                         + enumToForSaleObjectDict[itemEnumRef].Name.ToLower() 
                         + " Enjoy it!");
+                    // Processes refund if applicable. No refund given if user was told 'EXACT MONEY ONLY' before inserting money, even if sufficient change now available 
+                    // for refund.
                     if (changeAvailable)
                     {
                         double change = paidSoFar - enumToForSaleObjectDict[itemEnumRef].Cost;
                         Console.WriteLine("Your change is " + change.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + ". Have a nice day. :)");
                         paidSoFar = 0;
-                        RefundUser(change);
+                        RefundUser(change); // Removes money inserted by user from 'listOfCoinsUserPutInMachine' list.
                         listOfCoinsUserPutInMachine.Clear();
                         MenuOptions();
                     }
                     else
                     {
-                        Console.WriteLine("Have a nice day");
-                        paidSoFar = 0;
+                        Console.WriteLine("No change is available. Have a nice day");
+                        paidSoFar = 0; // The balance is reset rather than carried forward. 
                         MenuOptions();
                     }
                 }
@@ -265,7 +267,7 @@ namespace Vending_Machine
                 throw new NotImplementedException("Object not in dictionary - debugging required!");
             }
         }
-        private static void PopulateForSaleDictionary()
+        private static void PopulateEnumToForSaleDictionary()
         {
             Array itemValues = Enum.GetValues(typeof(ItemsForSaleEnum));
             foreach (ItemsForSaleEnum item in itemValues)
@@ -301,13 +303,13 @@ namespace Vending_Machine
         }
         static void Main(string[] args)
         {
-            PopulateForSaleDictionary();
-            UpdateStock(ItemsForSaleEnum.Chocolate, 3);
+            PopulateEnumToForSaleDictionary();
+            UpdateStock(ItemsForSaleEnum.Chocolate, 3); // Adds three chocolate bars to the stock
             UpdateStock(ItemsForSaleEnum.Cola,4);
             UpdateStock(ItemsForSaleEnum.Crisps, 0);
-            AddCoinsToMachine(CoinDenominationsEnum.FiveP, 30);
+            AddCoinsToMachine(CoinDenominationsEnum.FiveP, 30); // Adds 30 5p coins to the machine.
             AddCoinsToMachine(CoinDenominationsEnum.TwentyP, 2);
-            MenuOptions();
+            MenuOptions(); // Presents the user with their options. Runs in a loop till program terminates.
         }
     }
 }
