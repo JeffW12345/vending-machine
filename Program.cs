@@ -7,6 +7,7 @@ namespace Vending_Machine
     class Program
     {
         private static List<Coin> listOfCoinsInMachine = new List<Coin>();
+        private static List<Coin> listOfCoinsUserPutInMachine = new List<Coin>();
         private static List<int> validUserOptions;
         private static Dictionary<ItemsForSaleEnum, ForSale> enumToObjDict = new Dictionary<ItemsForSaleEnum, ForSale>();
         private static double paidSoFar = 0;
@@ -45,6 +46,7 @@ namespace Vending_Machine
                     paidSoFar += paidInAmount;
                     Console.WriteLine("Thank you for your payment of " + paidInAmount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + ".");
                     AddCoinsToMachine((CoinDenominationsEnum)numChosen, 1);
+                    listOfCoinsUserPutInMachine.Add(GetCoin((CoinDenominationsEnum)numChosen));
                     MenuOptions();
                 }
                 // If user buys item
@@ -60,6 +62,8 @@ namespace Vending_Machine
                         double change = paidSoFar - enumToObjDict[itemEnumRef].Cost;
                         Console.WriteLine("Your change is " + change.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + ". Have a nice day. :)");
                         paidSoFar = 0;
+                        RemoveCoinsUserPutInMachine();
+                        listOfCoinsUserPutInMachine.Clear();
                         MenuOptions();
                     }
                     else
@@ -75,6 +79,21 @@ namespace Vending_Machine
             {
                 Console.WriteLine("That was not a valid option. Please try again");
                 MenuOptions();
+            }
+        }
+
+        private static void RemoveCoinsUserPutInMachine()
+        {
+            foreach(var userInsertedCoin in listOfCoinsUserPutInMachine)
+            {
+                foreach(var coin in listOfCoinsInMachine)
+                {
+                    if(coin.Value == userInsertedCoin.Value)
+                    {
+                        listOfCoinsInMachine.Remove(coin);
+                        continue;
+                    }
+                }
             }
         }
 
@@ -258,11 +277,10 @@ namespace Vending_Machine
             UpdateStock(ItemsForSaleEnum.Chocolate, 3);
             UpdateStock(ItemsForSaleEnum.Cola,4);
             UpdateStock(ItemsForSaleEnum.Crisps, 0);
-            //AddCoinsToMachine(CoinDenominationsEnum.FiveP, 30);
+            AddCoinsToMachine(CoinDenominationsEnum.FiveP, 30);
             AddCoinsToMachine(CoinDenominationsEnum.TwentyP, 2);
             MenuOptions();
         }
     }
 }
-
 
