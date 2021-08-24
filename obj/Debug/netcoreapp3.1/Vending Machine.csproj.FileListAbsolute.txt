@@ -1,0 +1,13 @@
+C:\Users\water\source\repos\Vending Machine\bin\Debug\netcoreapp3.1\Vending Machine.exe
+C:\Users\water\source\repos\Vending Machine\bin\Debug\netcoreapp3.1\Vending Machine.deps.json
+C:\Users\water\source\repos\Vending Machine\bin\Debug\netcoreapp3.1\Vending Machine.runtimeconfig.json
+C:\Users\water\source\repos\Vending Machine\bin\Debug\netcoreapp3.1\Vending Machine.runtimeconfig.dev.json
+C:\Users\water\source\repos\Vending Machine\bin\Debug\netcoreapp3.1\Vending Machine.dll
+C:\Users\water\source\repos\Vending Machine\bin\Debug\netcoreapp3.1\Vending Machine.pdb
+C:\Users\water\source\repos\Vending Machine\obj\Debug\netcoreapp3.1\Vending Machine.csprojAssemblyReference.cache
+C:\Users\water\source\repos\Vending Machine\obj\Debug\netcoreapp3.1\Vending Machine.AssemblyInfoInputs.cache
+C:\Users\water\source\repos\Vending Machine\obj\Debug\netcoreapp3.1\Vending Machine.AssemblyInfo.cs
+C:\Users\water\source\repos\Vending Machine\obj\Debug\netcoreapp3.1\Vending Machine.csproj.CoreCompileInputs.cache
+C:\Users\water\source\repos\Vending Machine\obj\Debug\netcoreapp3.1\Vending Machine.dll
+C:\Users\water\source\repos\Vending Machine\obj\Debug\netcoreapp3.1\Vending Machine.pdb
+C:\Users\water\source\repos\Vending Machine\obj\Debug\netcoreapp3.1\Vending Machine.genruntimeconfig.cache

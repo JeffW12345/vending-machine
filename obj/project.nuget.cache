@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "/yBqmXVIORfPYCmNX2vJX24U+WishNR/DqHpmyZYJx+Hw00wOuNo15b+aftIVPv4DN+Go+aeTWnfCNFWCF2xZg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\water\\source\\repos\\Vending Machine\\Vending Machine.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\water\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.16\\microsoft.netcore.app.host.win-x64.3.1.16.nupkg.sha512"
+  ],
+  "logs": []
+}
