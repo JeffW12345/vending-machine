@@ -132,8 +132,9 @@ namespace Vending_Machine
         private static void ForSaleItemsMessage()
         {
             Console.WriteLine("\nThese are the items for sale:\n");
-            Array enumValues = Enum.GetValues(typeof(ItemsForSaleEnum));
             int itemNum = Enum.GetNames(typeof(CoinDenominationsEnum)).Length + 1; // Next number in display is the number after the coin denomination final number
+            // Loops through For Sale enums to access corresponding ForSale objects in the dictionary. 
+            Array enumValues = Enum.GetValues(typeof(ItemsForSaleEnum));
             foreach (ItemsForSaleEnum item in enumValues)
             {
                 ForSale forSale = ForSaleFactory.EnumToForSaleObjectDict[item];
@@ -205,6 +206,7 @@ namespace Vending_Machine
             }
             decimal remaining = (decimal)amountRemaining; // To prevent rounding issues, such as 15 being represented as 14.999999999
             CoinFactory.ListOfCoinsInMachine.OrderBy(o => o.Value).ToList(); // Sorts low to high by value
+            // Looks at each coin in turn, highest value to lowest value. If coin value is <= the amount remaining, the coin is used as part of the change. 
             for (int j = CoinFactory.ListOfCoinsInMachine.Count - 1; j > -1; j--)
             {
                 if (remaining > 0 && j == 0)
