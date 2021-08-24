@@ -9,7 +9,7 @@ namespace Vending_Machine
         private static List<Coin> listOfCoinsInMachine = new List<Coin>();
         private static List<Coin> listOfCoinsUserPutInMachine = new List<Coin>();
         private static List<int> validUserOptions;
-        private static Dictionary<ItemsForSaleEnum, ForSale> enumToObjDict = new Dictionary<ItemsForSaleEnum, ForSale>();
+        private static Dictionary<ItemsForSaleEnum, ForSale> enumToForSaleObjectDict = new Dictionary<ItemsForSaleEnum, ForSale>();
         private static double paidSoFar = 0;
         private static void MenuOptions()
         {
@@ -57,11 +57,11 @@ namespace Vending_Machine
                     ItemsForSaleEnum itemEnumRef = (ItemsForSaleEnum)numChosen - (Enum.GetNames(typeof(CoinDenominationsEnum)).Length + 1);
                     UpdateStock(itemEnumRef, -1);
                     Console.WriteLine("Thank you for purchasing " 
-                        + enumToObjDict[itemEnumRef].Name.ToLower() 
+                        + enumToForSaleObjectDict[itemEnumRef].Name.ToLower() 
                         + " Enjoy it!");
                     if (changeAvailable)
                     {
-                        double change = paidSoFar - enumToObjDict[itemEnumRef].Cost;
+                        double change = paidSoFar - enumToForSaleObjectDict[itemEnumRef].Cost;
                         Console.WriteLine("Your change is " + change.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-gb")) + ". Have a nice day. :)");
                         paidSoFar = 0;
                         RemoveCoinsUserPutInMachine();
@@ -112,7 +112,7 @@ namespace Vending_Machine
             int itemNum = Enum.GetNames(typeof(CoinDenominationsEnum)).Length + 1; // Next number in display is the number after the coin denomination final number
             foreach (ItemsForSaleEnum item in enumValues)
             {
-                ForSale forSale = enumToObjDict[item];
+                ForSale forSale = enumToForSaleObjectDict[item];
                 if(forSale.Quantity == 0)
                 {
                     Console.WriteLine(itemNum + ": " + forSale.Name + " Cost: " + forSale.Cost + " OUT OF STOCK");
@@ -184,12 +184,12 @@ namespace Vending_Machine
                 foreach (ItemsForSaleEnum item in itemsEnum)
                 {
                     // Move to next item if this item out of stock
-                    if(enumToObjDict[item].Quantity == 0)
+                    if(enumToForSaleObjectDict[item].Quantity == 0)
                     {
                         continue;
                     }
                     double coinVal = GetCoin(coin).Value;
-                    double itemInMachineCost = enumToObjDict[item].Cost;
+                    double itemInMachineCost = enumToForSaleObjectDict[item].Cost;
                     if ((coinVal + paidSoFar) > itemInMachineCost && !IsChangeAvailableForThisAmount((coinVal + paidSoFar) - itemInMachineCost))
                     {
                         return false;
@@ -231,9 +231,9 @@ namespace Vending_Machine
 
         private static void UpdateStock(ItemsForSaleEnum itemForSale, int quantityToAddToStock)
         {
-            if (enumToObjDict.ContainsKey(itemForSale))
+            if (enumToForSaleObjectDict.ContainsKey(itemForSale))
             {
-                enumToObjDict[itemForSale].Quantity += quantityToAddToStock;
+                enumToForSaleObjectDict[itemForSale].Quantity += quantityToAddToStock;
             }
             else
             {
@@ -247,17 +247,17 @@ namespace Vending_Machine
             {
                 if(item == ItemsForSaleEnum.Cola)
                 {
-                    enumToObjDict.Add(item, new ForSale(item.ToString(), 1.00));
+                    enumToForSaleObjectDict.Add(item, new ForSale(item.ToString(), 1.00));
                     continue;
                 }
                 if (item == ItemsForSaleEnum.Chocolate)
                 {
-                    enumToObjDict.Add(item, new ForSale(item.ToString(), 0.65));
+                    enumToForSaleObjectDict.Add(item, new ForSale(item.ToString(), 0.65));
                     continue;
                 }
                 if (item == ItemsForSaleEnum.Crisps)
                 {
-                    enumToObjDict.Add(item, new ForSale(item.ToString(), 0.50));
+                    enumToForSaleObjectDict.Add(item, new ForSale(item.ToString(), 0.50));
                     continue;
                 }
                 else
