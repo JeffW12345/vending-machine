@@ -6,6 +6,12 @@ namespace Vending_Machine
 {
     class CoinFactory
     {
+        private static List<Coin> listOfCoinsInMachine = new List<Coin>();
+        private static List<Coin> listOfCoinsUserPutInMachine = new List<Coin>();
+
+        internal static List<Coin> ListOfCoinsUserPutInMachine { get => listOfCoinsUserPutInMachine; set => listOfCoinsUserPutInMachine = value; }
+        internal static List<Coin> ListOfCoinsInMachine { get => listOfCoinsInMachine; set => listOfCoinsInMachine = value; }
+
         public static Coin GetCoin(CoinDenominationsEnum coinValue)
         {
             switch (coinValue)
@@ -34,5 +40,14 @@ namespace Vending_Machine
                     throw new NotImplementedException("Enum item not present in GetCoin method - debugging required!");
             }
         }
+
+        public static void AddCoinsToMachine(CoinDenominationsEnum coinValue, int numToAdd)
+        {
+            for (int i = 0; i < numToAdd; i++)
+            {
+                ListOfCoinsInMachine.Add(CoinFactory.GetCoin(coinValue));
+            }
+        }
     }
 }
+
